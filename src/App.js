@@ -98,6 +98,22 @@ const movies = {
 };
 
 class App extends Component {
+  
+  constructor(props) {
+    super(props)
+    this.moviesByPeople = {}
+    
+    profiles.map( profile => {
+      const movieId = profile.favoriteMovieID;
+      
+      if(this.moviesByPeople[movieId]) {
+        this.moviesByPeople[movieId].push(profile.userID)
+      } else {
+        this.moviesByPeople[movieId] = [profile.userID]
+      }
+    }); 
+  }
+  
   render() {
     return (
       <div className="App">
@@ -107,12 +123,19 @@ class App extends Component {
         </header>
         <h2>How Popular is Your Favorite Movie?</h2>
 
-		{profiles.map( profile => {
+		{Object.keys(this.moviesByPeople).map( movie => {
 			return (
-				<p>Movies</p>
+				<div key={movie}>
+					<h3>{movies[movie].name}</h3>
+					Liked By:
+					<ol>
+						{this.moviesByPeople[movie].map( person => {
+                          return <li key={person}>{users[person].name}</li> 
+                        })}
+					</ol>
+				</div>
 			)
 		})}
-
       </div>
     );
   }
